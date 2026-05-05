@@ -21,7 +21,11 @@ export async function readBookings(): Promise<Booking[]> {
       )[0];
     if (!blob) return [];
 
-    const res = await fetch(blob.url, { cache: "no-store" });
+    // Cache-bust the CDN-served blob URL with the latest uploadedAt
+    // (default cache-control is one month, so without this the next read
+    // would return the stale pre-write JSON).
+    const url = `${blob.url}?v=${blob.uploadedAt.getTime()}`;
+    const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) {
       console.error(
         `[storage] blob fetch failed: ${res.status} ${res.statusText}`,
@@ -49,5 +53,6 @@ export async function writeBookings(bookings: Booking[]): Promise<void> {
     contentType: "application/json",
     addRandomSuffix: false,
     allowOverwrite: true,
+    cacheControlMaxAge: 60,
   });
 }
