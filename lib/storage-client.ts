@@ -40,3 +40,11 @@ export function addBookedId(slotId: string, bookingId: string): BookedIds {
   return next;
 }
 
+export function removeBookedId(slotId: string): BookedIds {
+  const current = read();
+  if (!(slotId in current)) return current;
+  const next = { ...current };
+  delete next[slotId];
+  write(next);
+  return next;
+}

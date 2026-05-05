@@ -14,6 +14,7 @@ type Props = {
   ownBookingId: string | undefined;
   adminMode: boolean;
   onBook: () => void;
+  onCancel: (bookingId: string) => void;
   onAdminDelete: (bookingId: string) => void;
 };
 
@@ -27,6 +28,7 @@ export default function SlotCard({
   ownBookingId,
   adminMode,
   onBook,
+  onCancel,
   onAdminDelete,
 }: Props) {
   const full = filled >= capacity;
@@ -137,10 +139,15 @@ export default function SlotCard({
         )}
 
         <div className="flex items-center gap-3">
-          {ownBookingId && !past ? (
-            <p className="text-sm italic text-[var(--ink-faint)]">
-              Geboekt — laat me weten als je toch niet kan.
-            </p>
+          {ownBookingId ? (
+            <button
+              type="button"
+              onClick={() => onCancel(ownBookingId)}
+              className="border border-transparent px-3 py-2 text-sm italic text-[var(--ink-soft)] underline-offset-4 hover:underline"
+              style={{ borderRadius: "2px" }}
+            >
+              Annuleren
+            </button>
           ) : null}
 
           {!past && !full && !ownBookingId ? (

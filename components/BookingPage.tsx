@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SLOTS, CAPACITY, isSlotPast, type Slot } from "@/lib/slots";
 import type { Booking, BookedIds } from "@/lib/types";
-import { getBookedIds, addBookedId } from "@/lib/storage-client";
+import {
+  getBookedIds,
+  addBookedId,
+  removeBookedId,
+} from "@/lib/storage-client";
 import SlotCard from "./SlotCard";
 import BookingModal from "./BookingModal";
 import AdminModal from "./AdminModal";
@@ -112,6 +116,27 @@ export default function BookingPage({ initialBookings }: Props) {
     [refetch],
   );
 
+  const handleCancel = useCallback(
+    async (slotId: string, bookingId: string) => {
+      if (!window.confirm("Weet je zeker dat je je boeking wil annuleren?")) {
+        return;
+      }
+      try {
+        const res = await fetch("/api/cancel", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ slotId, bookingId }),
+        });
+        if (res.ok) {
+          setBookedIds(removeBookedId(slotId));
+        }
+      } finally {
+        await refetch();
+      }
+    },
+    [refetch],
+  );
+
   const handleAdminDelete = useCallback(
     async (bookingId: string) => {
       if (!adminCode) return;
@@ -178,6 +203,7 @@ export default function BookingPage({ initialBookings }: Props) {
               ownBookingId={ownBookingId}
               adminMode={adminCode !== null}
               onBook={() => setOpenSlot(slot)}
+              onCancel={(bookingId) => handleCancel(slot.id, bookingId)}
               onAdminDelete={handleAdminDelete}
             />
           );
