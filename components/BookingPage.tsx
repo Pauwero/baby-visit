@@ -7,6 +7,7 @@ import {
   getBookedIds,
   addBookedId,
   removeBookedId,
+  setBookedIds as writeBookedIds,
 } from "@/lib/storage-client";
 import SlotCard from "./SlotCard";
 import BookingModal from "./BookingModal";
@@ -39,6 +40,21 @@ export default function BookingPage({ initialBookings }: Props) {
     const t = window.setTimeout(() => setToast(null), 6000);
     return () => window.clearTimeout(t);
   }, [toast]);
+
+  // Self-heal localStorage: drop any (slotId → bookingId) entries that
+  // no longer match a real booking on the server (e.g. admin-deleted
+  // or after a full reset).
+  useEffect(() => {
+    if (Object.keys(bookedIds).length === 0) return;
+    const real = new Set(bookings.map((b) => `${b.slotId}|${b.id}`));
+    const cleaned: Record<string, string> = {};
+    for (const [slotId, bookingId] of Object.entries(bookedIds)) {
+      if (real.has(`${slotId}|${bookingId}`)) cleaned[slotId] = bookingId;
+    }
+    if (Object.keys(cleaned).length !== Object.keys(bookedIds).length) {
+      setBookedIds(writeBookedIds(cleaned));
+    }
+  }, [bookings, bookedIds]);
 
   const hasOwnBooking = Object.keys(bookedIds).length > 0;
   const namesVisible = hasOwnBooking || adminCode !== null;
@@ -157,6 +173,25 @@ export default function BookingPage({ initialBookings }: Props) {
     [adminCode, refetch],
   );
 
+  const handleAdminReset = useCallback(async () => {
+    if (!adminCode) return;
+    if (
+      !window.confirm(
+        "Alle boekingen wissen? Dit kan niet ongedaan gemaakt worden.",
+      )
+    ) {
+      return;
+    }
+    try {
+      await fetch("/api/admin-reset", {
+        method: "POST",
+        headers: { "x-admin-code": adminCode },
+      });
+    } finally {
+      await refetch();
+    }
+  }, [adminCode, refetch]);
+
   return (
     <div className="relative">
       <header className="mx-auto max-w-2xl px-6 pt-12 pb-10 text-center">
@@ -212,13 +247,28 @@ export default function BookingPage({ initialBookings }: Props) {
 
       <footer className="px-6 pb-12 text-center">
         <Sprig className="mx-auto mb-4 h-6 w-auto text-[var(--sage)]" />
-        <button
-          type="button"
-          onClick={() => setAdminOpen(true)}
-          className="text-sm italic text-[var(--ink-faint)] underline-offset-4 hover:underline"
-        >
-          Beheer
-        </button>
+        {adminCode !== null ? (
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-xs italic text-[var(--ink-faint)]">
+              Beheer ontgrendeld
+            </p>
+            <button
+              type="button"
+              onClick={handleAdminReset}
+              className="text-sm italic text-[var(--terracotta)] underline-offset-4 hover:underline"
+            >
+              Reset alle boekingen
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setAdminOpen(true)}
+            className="text-sm italic text-[var(--ink-faint)] underline-offset-4 hover:underline"
+          >
+            Beheer
+          </button>
+        )}
       </footer>
 
       {openSlot ? (

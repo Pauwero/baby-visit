@@ -48,3 +48,8 @@ export function removeBookedId(slotId: string): BookedIds {
   write(next);
   return next;
 }
+
+export function setBookedIds(value: BookedIds): BookedIds {
+  write(value);
+  return value;
+}
