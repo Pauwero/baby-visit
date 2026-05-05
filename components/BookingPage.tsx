@@ -158,7 +158,7 @@ export default function BookingPage({ initialBookings }: Props) {
       if (!adminCode) return;
       if (!window.confirm("Boeking definitief verwijderen?")) return;
       try {
-        await fetch("/api/admin-delete", {
+        const res = await fetch("/api/admin-delete", {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -166,6 +166,18 @@ export default function BookingPage({ initialBookings }: Props) {
           },
           body: JSON.stringify({ bookingId }),
         });
+        if (!res.ok) {
+          const data = (await res.json().catch(() => ({}))) as {
+            error?: string;
+          };
+          const hint =
+            res.status === 401
+              ? " — controleer dat ADMIN_CODE in Vercel gelijk is aan NEXT_PUBLIC_ADMIN_CODE en redeploy."
+              : "";
+          window.alert(
+            `Verwijderen mislukt (${res.status}): ${data.error ?? "onbekende fout"}${hint}`,
+          );
+        }
       } finally {
         await refetch();
       }
@@ -183,10 +195,22 @@ export default function BookingPage({ initialBookings }: Props) {
       return;
     }
     try {
-      await fetch("/api/admin-reset", {
+      const res = await fetch("/api/admin-reset", {
         method: "POST",
         headers: { "x-admin-code": adminCode },
       });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        const hint =
+          res.status === 401
+            ? " — controleer dat ADMIN_CODE in Vercel gelijk is aan NEXT_PUBLIC_ADMIN_CODE en redeploy."
+            : "";
+        window.alert(
+          `Reset mislukt (${res.status}): ${data.error ?? "onbekende fout"}${hint}`,
+        );
+      }
     } finally {
       await refetch();
     }
