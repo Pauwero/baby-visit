@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #f4eee2;
+  --paper-dark: #ebe2d0;
+  --cream: #faf6ec;
+  --ink: #2a1f14;
+  --ink-soft: #5a4a38;
+  --ink-faint: #8a7a65;
+  --terracotta: #b8624a;
+  --sage: #6b7f5a;
+  --border-soft: #d6cfc2;
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-public-sans), system-ui, sans-serif;
+  position: relative;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(
+      circle at 15% 12%,
+      rgba(184, 98, 74, 0.10),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      rgba(107, 127, 90, 0.10),
+      transparent 50%
+    );
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+  mix-blend-mode: multiply;
+  opacity: 0.18;
+}
+
+main,
+header,
+footer,
+.page-content {
+  position: relative;
+  z-index: 2;
+}
+
+.font-serif {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-feature-settings: "ss01", "ss02";
+}
+
+.stamp {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
