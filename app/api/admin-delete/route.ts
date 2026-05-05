@@ -37,7 +37,8 @@ export async function POST(req: Request) {
     const next = bookings.filter((b) => b.id !== bookingId);
     await writeBookings(next);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error("[/api/admin-delete] storage failure:", err);
     return NextResponse.json(
       { error: "Kon boeking niet verwijderen." },
       { status: 500 },

@@ -88,10 +88,12 @@ export async function POST(req: Request) {
 
     await writeBookings([...bookings, booking]);
     return NextResponse.json({ booking });
-  } catch {
-    return NextResponse.json(
-      { error: "Kon je boeking niet opslaan." },
-      { status: 500 },
-    );
+  } catch (err) {
+    console.error("[/api/book] storage failure:", err);
+    const message =
+      err instanceof Error && err.message.startsWith("BLOB_READ_WRITE_TOKEN")
+        ? "Opslag is nog niet geconfigureerd — meld dit aan Robin."
+        : "Kon je boeking niet opslaan.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

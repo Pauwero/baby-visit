@@ -37,7 +37,8 @@ export async function POST(req: Request) {
     );
     await writeBookings(next);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error("[/api/cancel] storage failure:", err);
     return NextResponse.json(
       { error: "Kon boeking niet annuleren." },
       { status: 500 },
