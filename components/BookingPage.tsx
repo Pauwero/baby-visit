@@ -159,13 +159,27 @@ export default function BookingPage({ initialBookings }: Props) {
 
   return (
     <div className="relative">
-      <header className="px-6 pt-12 pb-8 text-center">
+      <header className="mx-auto max-w-2xl px-6 pt-12 pb-10 text-center">
         <Sprig className="mx-auto mb-6 h-8 w-auto text-[var(--sage)]" />
-        <h1 className="font-serif text-4xl text-[var(--ink)] md:text-5xl">
-          Kom op bezoek
+        <p className="font-serif text-5xl italic text-[var(--terracotta)] md:text-6xl">
+          Rémi
+        </p>
+        <h1 className="mt-3 font-serif text-3xl text-[var(--ink)] md:text-4xl">
+          Onze kleine spruit
+          <br />
+          is er.
         </h1>
-        <p className="mx-auto mt-3 max-w-md text-[var(--ink-soft)]">
-          Kies een dinsdag die je past. Acht plekken per avond.
+        <p className="mx-auto mt-6 max-w-lg text-[var(--ink-soft)]">
+          We zouden jullie graag laten kennismaken met onze kleine man. Sarah is
+          nog wat aan het herstellen, dus we doen het in kleine groepjes. We
+          zorgen voor wat hapjes — chips, pizza, dat soort dingen — en drankjes.
+          Kies hieronder een dinsdag die past, en we zien jullie graag.
+        </p>
+        <p className="mt-5 font-serif italic text-[var(--ink)]">
+          — Robin &amp; Sarah
+        </p>
+        <p className="mx-auto mt-8 max-w-md text-sm italic text-[var(--ink-faint)]">
+          Zodra je een moment kiest, zie je wie er nog meer komt.
         </p>
       </header>
 

@@ -15,8 +15,8 @@ const publicSans = Public_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Kom op bezoek",
-  description: "Boek een dinsdagavond om langs te komen.",
+  title: "Rémi — kom op bezoek",
+  description: "Boek een dinsdagavond om Rémi te ontmoeten.",
 };
 
 export default function RootLayout({
