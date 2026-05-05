@@ -56,9 +56,6 @@ export default function BookingPage({ initialBookings }: Props) {
     }
   }, [bookings, bookedIds]);
 
-  const hasOwnBooking = Object.keys(bookedIds).length > 0;
-  const namesVisible = hasOwnBooking || adminCode !== null;
-
   const bookingsBySlot = useMemo(() => {
     const map: Record<string, Booking[]> = {};
     for (const b of bookings) {
@@ -237,9 +234,6 @@ export default function BookingPage({ initialBookings }: Props) {
         <p className="mt-5 font-serif italic text-[var(--ink)]">
           — Robin &amp; Sarah
         </p>
-        <p className="mx-auto mt-8 max-w-md text-sm italic text-[var(--ink-faint)]">
-          Zodra je een moment kiest, zie je wie er nog meer komt.
-        </p>
       </header>
 
       <main className="mx-auto max-w-3xl space-y-4 px-4 pb-16">
@@ -258,7 +252,6 @@ export default function BookingPage({ initialBookings }: Props) {
               filled={filled}
               capacity={CAPACITY}
               past={isSlotPast(slot.id)}
-              namesVisible={namesVisible}
               ownBookingId={ownBookingId}
               adminMode={adminCode !== null}
               onBook={() => setOpenSlot(slot)}

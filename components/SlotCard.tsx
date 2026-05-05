@@ -10,7 +10,6 @@ type Props = {
   filled: number;
   capacity: number;
   past: boolean;
-  namesVisible: boolean;
   ownBookingId: string | undefined;
   adminMode: boolean;
   onBook: () => void;
@@ -24,7 +23,6 @@ export default function SlotCard({
   filled,
   capacity,
   past,
-  namesVisible,
   ownBookingId,
   adminMode,
   onBook,
@@ -33,7 +31,6 @@ export default function SlotCard({
 }: Props) {
   const full = filled >= capacity;
   const ownBorder = !!ownBookingId;
-  const totalPeople = bookings.reduce((sum, b) => sum + b.guestCount, 0);
 
   return (
     <article
@@ -97,44 +94,34 @@ export default function SlotCard({
       </div>
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {namesVisible ? (
-          bookings.length > 0 ? (
-            <ul className="space-y-1 text-sm text-[var(--ink-soft)]">
-              {bookings.map((b) => (
-                <li key={b.id} className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="font-serif text-[var(--ink)]">{b.name}</span>
-                  <span className="text-[var(--ink-faint)]">
-                    {b.guestCount === 1 ? "alleen" : `met ${b.guestCount}`}
+        {bookings.length > 0 ? (
+          <ul className="space-y-1 text-sm text-[var(--ink-soft)]">
+            {bookings.map((b) => (
+              <li key={b.id} className="flex flex-wrap items-baseline gap-x-2">
+                <span className="font-serif text-[var(--ink)]">{b.name}</span>
+                <span className="text-[var(--ink-faint)]">
+                  {b.guestCount === 1 ? "alleen" : `met ${b.guestCount}`}
+                </span>
+                {b.message ? (
+                  <span className="basis-full italic text-[var(--ink-faint)]">
+                    &ldquo;{b.message}&rdquo;
                   </span>
-                  {b.message ? (
-                    <span className="basis-full italic text-[var(--ink-faint)]">
-                      &ldquo;{b.message}&rdquo;
-                    </span>
-                  ) : null}
-                  {adminMode ? (
-                    <button
-                      type="button"
-                      onClick={() => onAdminDelete(b.id)}
-                      className="text-xs italic text-[var(--terracotta)] underline-offset-2 hover:underline"
-                    >
-                      verwijder
-                    </button>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm italic text-[var(--ink-faint)]">
-              Nog niemand geboekt.
-            </p>
-          )
+                ) : null}
+                {adminMode ? (
+                  <button
+                    type="button"
+                    onClick={() => onAdminDelete(b.id)}
+                    className="text-xs italic text-[var(--terracotta)] underline-offset-2 hover:underline"
+                  >
+                    verwijder
+                  </button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
         ) : (
           <p className="text-sm italic text-[var(--ink-faint)]">
-            {totalPeople === 0
-              ? "Nog niemand geboekt."
-              : `${totalPeople} ${
-                  totalPeople === 1 ? "iemand heeft" : "mensen hebben"
-                } al geboekt.`}
+            Nog niemand geboekt.
           </p>
         )}
 
